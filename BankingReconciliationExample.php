@@ -1,7 +1,7 @@
 <?php
 require_once 'BankingReconciliation.php';
 
-// To generate the dates for August 2019
+// To generate the starting and ending dates for August 2019
 
 $startDate = "2019-08-01";
 
@@ -12,14 +12,14 @@ $calendarMonthEndDate = (new DateTime($startDate))->modify('last day of this mon
 echo "Starting Calendar Date: \t" .   $calendarMonthStartDate->format('Y-m-d') . "\n";
 echo "Ending Calendar Date: \t\t" . $calendarMonthEndDate->format('Y-m-d') . "\n\n";
 
-$bankcardStartingDate = BankingReconciliation::getEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($calendarMonthStartDate, BankingReconciliation::BANKCARD);
-$bankcardEndingDate   = BankingReconciliation::getLatestProcessingDateWithDepositDateLessThanOrEqualTo($calendarMonthEndDate, BankingReconciliation::BANKCARD);
+$bankcardStartingDate = BankingReconciliation::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($calendarMonthStartDate, BankingReconciliation::BANKCARD);
+$bankcardEndingDate   = BankingReconciliation::calculateLatestProcessingDateWithDepositDateLessThanOrEqualTo($calendarMonthEndDate, BankingReconciliation::BANKCARD);
 
 echo "Starting Bankcard Date: \t" .   $bankcardStartingDate->format('Y-m-d') . "\n";
 echo "Ending Bankcard Date: \t\t" . $bankcardEndingDate->format('Y-m-d') . "\n\n";
 
-$amexStartingDate = BankingReconciliation::getEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($calendarMonthStartDate, BankingReconciliation::AMEX);
-$amexEndingDate   = BankingReconciliation::getLatestProcessingDateWithDepositDateLessThanOrEqualTo($calendarMonthEndDate, BankingReconciliation::AMEX);
+$amexStartingDate = BankingReconciliation::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($calendarMonthStartDate, BankingReconciliation::AMEX);
+$amexEndingDate   = BankingReconciliation::calculateLatestProcessingDateWithDepositDateLessThanOrEqualTo($calendarMonthEndDate, BankingReconciliation::AMEX);
 
 echo "Starting Amex Date: \t\t" .   $amexStartingDate->format('Y-m-d') . "\n";
 echo "Ending Amex Date: \t\t" . $amexEndingDate->format('Y-m-d') . "\n\n";

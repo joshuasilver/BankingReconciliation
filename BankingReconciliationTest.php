@@ -64,7 +64,7 @@ class BankingReconciliationTest extends TestCase
      * @dataProvider subtractBankingDaysDP
      */
     public function testSubtractBankingDays($dt, $numDays, $expectedResult) {
-            $this->assertEquals(BankingReconciliation::subtractBankingDays($dt, $numDays), $expectedResult);      
+        $this->assertEquals(BankingReconciliation::subtractBankingDays($dt, $numDays), $expectedResult);
     }
 
     public function subtractBankingDaysDP() {
@@ -82,7 +82,7 @@ class BankingReconciliationTest extends TestCase
      * @dataProvider addBankingDaysDP
      */
     public function testAddBankingDays($dt, $numDays, $expectedResult) {
-            $this->assertEquals(BankingReconciliation::addBankingDays($dt, $numDays), $expectedResult);      
+        $this->assertEquals(BankingReconciliation::addBankingDays($dt, $numDays), $expectedResult);
     }
 
     public function addBankingDaysDP() {
@@ -96,13 +96,13 @@ class BankingReconciliationTest extends TestCase
 
 
 	/**
-     * @dataProvider getEarliestProcessingDateWithDepositDateGreaterThanOrEqualToDP
+     * @dataProvider calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualToDP
      */
-    public function testGetEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($inputDate, $inputCardType, $expectedResult) {
-            $this->assertEquals(BankingReconciliation::getEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($inputDate, $inputCardType), $expectedResult);      
+    public function testCalculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($inputDate, $inputPaymentType, $expectedResult) {
+        $this->assertEquals(BankingReconciliation::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($inputDate, $inputPaymentType), $expectedResult);
     }
 
-    public function getEarliestProcessingDateWithDepositDateGreaterThanOrEqualToDP() {
+    public function calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualToDP() {
 	    return [
     		[new DateTime("2019-08-01"), BankingReconciliation::BANKCARD, new DateTime("2019-07-30")], // Thurs returns Tues
     		[new DateTime("2019-08-02"), BankingReconciliation::BANKCARD, new DateTime("2019-07-31")], // Fri   returns Wed
@@ -125,13 +125,13 @@ class BankingReconciliationTest extends TestCase
     }
 
     /**
-     * @dataProvider getLatestProcessingDateWithDepositDateLessThanOrEqualToDP
+     * @dataProvider calculateLatestProcessingDateWithDepositDateLessThanOrEqualToDP
      */
-    public function testGetLatestProcessingDateWithDepositDateLessThanOrEqualTo($inputDate, $inputCardType, $expectedResult) {
-            $this->assertEquals(BankingReconciliation::getLatestProcessingDateWithDepositDateLessThanOrEqualTo($inputDate, $inputCardType), $expectedResult);      
+    public function testCalculateLatestProcessingDateWithDepositDateLessThanOrEqualTo($inputDate, $inputPaymentType, $expectedResult) {
+            $this->assertEquals(BankingReconciliation::calculateLatestProcessingDateWithDepositDateLessThanOrEqualTo($inputDate, $inputPaymentType), $expectedResult);
     }
 
-    public function getLatestProcessingDateWithDepositDateLessThanOrEqualToDP() {
+    public function calculateLatestProcessingDateWithDepositDateLessThanOrEqualToDP() {
 	    return [
     		[new DateTime("2019-08-01"), BankingReconciliation::BANKCARD, new DateTime("2019-07-30")], // Thurs returns Tues
     		[new DateTime("2019-08-02"), BankingReconciliation::BANKCARD, new DateTime("2019-07-31")], // Fri   returns Wed
@@ -151,6 +151,43 @@ class BankingReconciliationTest extends TestCase
 
     		// TODO: add some bank holiday examples
 		];
+    }
+
+    /**
+     * @dataProvider calculateEffectiveDateDP
+     */
+    public function testCalculateEffectiveDate($inputDate, $inputPaymentType, $expectedResult) {
+        $this->assertEquals(BankingReconciliation::calculateEffectiveDate($inputDate, $inputPaymentType), $expectedResult);
+    }
+
+    public function calculateEffectiveDateDP() {
+        return [
+            [new DateTime("2019-08-01"), BankingReconciliation::BANKCARD, new DateTime("2019-08-05")], // Thurs returns Mon
+            [new DateTime("2019-08-02"), BankingReconciliation::BANKCARD, new DateTime("2019-08-05")], // Fri   returns Mon
+            [new DateTime("2019-08-03"), BankingReconciliation::BANKCARD, new DateTime("2019-08-05")], // Sat   returns Mon
+            [new DateTime("2019-08-04"), BankingReconciliation::BANKCARD, new DateTime("2019-08-06")], // Sun   returns Tues
+            [new DateTime("2019-08-05"), BankingReconciliation::BANKCARD, new DateTime("2019-08-07")], // Mon   returns Wed
+            [new DateTime("2019-08-06"), BankingReconciliation::BANKCARD, new DateTime("2019-08-08")], // Tues  returns Thur
+            [new DateTime("2019-08-07"), BankingReconciliation::BANKCARD, new DateTime("2019-08-09")], // Wed   returns Fri
+
+            [new DateTime("2019-07-31"), BankingReconciliation::AMEX, new DateTime("2019-08-05")], // Wed   returns Mon
+            [new DateTime("2019-08-01"), BankingReconciliation::AMEX, new DateTime("2019-08-05")], // Thurs returns Mon
+            [new DateTime("2019-08-02"), BankingReconciliation::AMEX, new DateTime("2019-08-05")], // Fri   returns Mon
+            [new DateTime("2019-08-03"), BankingReconciliation::AMEX, new DateTime("2019-08-06")], // Sat   returns Tues
+            [new DateTime("2019-08-04"), BankingReconciliation::AMEX, new DateTime("2019-08-07")], // Sun   returns Wed
+            [new DateTime("2019-08-05"), BankingReconciliation::AMEX, new DateTime("2019-08-08")], // Mon   returns Thurs
+            [new DateTime("2019-08-06"), BankingReconciliation::AMEX, new DateTime("2019-08-09")], // Tues  returns Fri
+
+            [new DateTime("2019-07-31"), BankingReconciliation::ACH, new DateTime("2019-07-31")], // Wed   returns Wed
+            [new DateTime("2019-08-01"), BankingReconciliation::ACH, new DateTime("2019-08-01")], // Thurs returns Thurs
+            [new DateTime("2019-08-02"), BankingReconciliation::ACH, new DateTime("2019-08-02")], // Fri   returns Fri
+            [new DateTime("2019-08-03"), BankingReconciliation::ACH, new DateTime("2019-08-05")], // Sat   returns Mon
+            [new DateTime("2019-08-04"), BankingReconciliation::ACH, new DateTime("2019-08-05")], // Sun   returns Mon
+            [new DateTime("2019-08-05"), BankingReconciliation::ACH, new DateTime("2019-08-05")], // Mon   returns Mon
+            [new DateTime("2019-08-06"), BankingReconciliation::ACH, new DateTime("2019-08-06")], // Tues  returns Tues
+
+            // TODO: add some bank holiday examples
+        ];
     }
 }
 ?>
