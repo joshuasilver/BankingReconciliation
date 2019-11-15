@@ -1,10 +1,11 @@
 <?php
+namespace JoshuaSilver;
 
 /**
  *
- * This code can be used when generating bank reconciliation reports for credit card processing. 
+ * This code can be used when generating bank reconciliation reports for credit card processing.
  * Both Amex and Bankcard (Visa/Mastercard/Discover) card types are supported
- * 
+ *
  * @author  Joshua Silver <joshua@joshuasilver.net>
  *
  */
@@ -94,9 +95,9 @@ class BankingReconciliation {
 		"2023-11-23",
 		"2023-12-25",
 	);
-	
+
 	public static function isBankingDay($dt) {
-		
+
 		$earliestSupportedDate = new DateTime('2017-01-01');
 		$latestSupportedDate = new DateTime('2023-12-31');
 
