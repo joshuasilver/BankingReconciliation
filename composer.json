@@ -1,0 +1,16 @@
+{
+  "name": "joshuasilver/bankingreconciliation",
+  "description": "Banking reconciliation functionality",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "authors": [
+    {
+      "name": "Joshua Silver",
+      "email": "joshua@joshuasilver.com"
+    }
+  ],
+  "license": "MIT",
+  "autoload": {
+    "psr-0": {"BankingReconciliation\\": "src/"}
+  }
+}
