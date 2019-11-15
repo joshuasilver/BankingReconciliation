@@ -11,5 +11,13 @@
             "email": "joshua@joshuasilver.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "JoshuaSilver\\": "src/JoshuaSilver/"
+        },
+        "exclude-from-classmap": [
+            "**/tests/"
+        ]
+    }
 }
