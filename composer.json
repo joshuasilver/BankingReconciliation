@@ -1,6 +1,7 @@
 {
   "name": "joshuasilver/bankingreconciliation",
   "description": "Banking reconciliation functionality",
+  "minimum-stability": "dev",
   "authors": [
     {
       "name": "Joshua Silver",
