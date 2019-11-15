@@ -102,15 +102,15 @@ class BankingReconciliation {
 		$latestSupportedDate = new DateTime('2023-12-31');
 
 		if (!($dt instanceof DateTime)) {
-			throw new BankingReconciliation_Exception("Must pass in DateTime, passed in: " . getType($dt));
+			throw new BankingReconciliationException("Must pass in DateTime, passed in: " . getType($dt));
 		}
 
 		if ($dt < $earliestSupportedDate) {
-			throw new BankingReconciliation_Exception("Dates before " . $earliestSupportedDate->format('Y-m-d') . " are not supported.  Passed in: " . $dt->format('Y-m-d'));
+			throw new BankingReconciliationException("Dates before " . $earliestSupportedDate->format('Y-m-d') . " are not supported.  Passed in: " . $dt->format('Y-m-d'));
 		}
 
 		if ($dt >= $latestSupportedDate) {
-			throw new BankingReconciliation_Exception("Dates after " . $latestSupportedDate->format('Y-m-d') . " are not supported.  Passed in: " . $dt->format('Y-m-d'));
+			throw new BankingReconciliationException("Dates after " . $latestSupportedDate->format('Y-m-d') . " are not supported.  Passed in: " . $dt->format('Y-m-d'));
 		}
 
 		if (in_array($dt->format('w'), array('0','6'))) { // Sun or Sat.  Not a banking day
@@ -145,7 +145,7 @@ class BankingReconciliation {
 				}
 				break;
 			default:
-				throw new BankingReconciliation_Exception("Invalid paymentType. Please pass in const AMEX or BANKCARD");
+				throw new BankingReconciliationException("Invalid paymentType. Please pass in const AMEX or BANKCARD");
 		}
 	}
 
@@ -170,7 +170,7 @@ class BankingReconciliation {
 				}
 				break;
 			default:
-				throw new BankingReconciliation_Exception("Invalid paymentType. Please pass in const AMEX or BANKCARD");
+				throw new BankingReconciliationException("Invalid paymentType. Please pass in const AMEX or BANKCARD");
 		}
 	}
 
@@ -196,13 +196,13 @@ class BankingReconciliation {
 				}
 				break;
 			default:
-				throw new BankingReconciliation_Exception("Invalid paymentType. Please pass in const AMEX, BANKCARD, or ACH");
+				throw new BankingReconciliationException("Invalid paymentType. Please pass in const AMEX, BANKCARD, or ACH");
 		}
 	}
 
 	public static function subtractBankingDays($dt, $numDays) {
 		if (!is_integer($numDays) || $numDays < 0) {
-			throw new BankingReconciliation_Exception("NumDays must be a positive integer.  Passed in:" . strVal($numDays));
+			throw new BankingReconciliationException("NumDays must be a positive integer.  Passed in:" . strVal($numDays));
 		}
 
 		while ($numDays > 0) {
@@ -216,7 +216,7 @@ class BankingReconciliation {
 
 	public static function addBankingDays($dt, $numDays) {
 		if (!is_integer($numDays) || $numDays < 0) {
-			throw new BankingReconciliation_Exception("NumDays must be a positive integer.  Passed in:" . strVal($numDays));
+			throw new BankingReconciliationException("NumDays must be a positive integer.  Passed in:" . strVal($numDays));
 		}
 
 		while ($numDays > 0) {
@@ -228,7 +228,4 @@ class BankingReconciliation {
 		return $dt;
 	}
 }
-
-class BankingReconciliation_Exception extends Exception { }
-
 ?>
