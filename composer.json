@@ -11,6 +11,6 @@
   ],
   "license": "MIT",
   "autoload": {
-    "psr-0": {"BankingReconciliation\\": "src/"}
+    "psr-0": {"JoshuaSilver\\": "src/"}
   }
 }
