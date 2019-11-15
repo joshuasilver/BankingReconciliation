@@ -98,10 +98,10 @@ class BankingReconciliation {
 
 	public static function isBankingDay($dt) {
 
-		$earliestSupportedDate = new DateTime('2017-01-01');
-		$latestSupportedDate = new DateTime('2023-12-31');
+		$earliestSupportedDate = new \DateTime('2017-01-01');
+		$latestSupportedDate = new \DateTime('2023-12-31');
 
-		if (!($dt instanceof DateTime)) {
+		if (!($dt instanceof \DateTime)) {
 			throw new BankingReconciliationException("Must pass in DateTime, passed in: " . getType($dt));
 		}
 
@@ -130,18 +130,18 @@ class BankingReconciliation {
 		switch ($paymentType) {
 			case self::BANKCARD:
 				if (!BankingReconciliation::isBankingDay($dt)){  // if NOT a banking day, recurse after adding 1  day
-					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->add(new DateInterval('P1D')), $paymentType);
+					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->add(new \DateInterval('P1D')), $paymentType);
 				} else {
 					 // Subtract 1 banking day and then subtract 1 calendar day
-					return self::subtractBankingDays($dt, 1)->sub(new DateInterval('P1D'));
+					return self::subtractBankingDays($dt, 1)->sub(new \DateInterval('P1D'));
 				}
 				break;
 			case self::AMEX:
 				if (!BankingReconciliation::isBankingDay($dt)){  // if NOT a banking day, recurse subtracting 1  day
-					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->sub(new DateInterval('P1D')), $paymentType);
+					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->sub(new \DateInterval('P1D')), $paymentType);
 				} else {
 					 // Subtract 1 banking day and then subtract 2 calendar day
-					return self::subtractBankingDays($dt, 1)->sub(new DateInterval('P2D'));
+					return self::subtractBankingDays($dt, 1)->sub(new \DateInterval('P2D'));
 				}
 				break;
 			default:
@@ -155,18 +155,18 @@ class BankingReconciliation {
 		switch ($paymentType) {
 			case self::BANKCARD:
 				if (!BankingReconciliation::isBankingDay($dt)){  // if NOT a banking day, recurse after subtracting 1 day
-					return self::calculateLatestProcessingDateWithDepositDateLessThanOrEqualTo($dt->sub(new DateInterval('P1D')), $paymentType);
+					return self::calculateLatestProcessingDateWithDepositDateLessThanOrEqualTo($dt->sub(new \DateInterval('P1D')), $paymentType);
 				} else {
 					 // Subtract 2 calendar days
-					return $dt->sub(new DateInterval('P2D'));
+					return $dt->sub(new \DateInterval('P2D'));
 				}
 				break;
 			case self::AMEX:
 				if (!BankingReconciliation::isBankingDay($dt)){  // if NOT a banking day, recurse subtracting 1  day
-					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->sub(new DateInterval('P1D')), $paymentType);
+					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->sub(new \DateInterval('P1D')), $paymentType);
 				} else {
 					 // Subtract 3 calendar days
-					return $dt->sub(new DateInterval('P3D'));
+					return $dt->sub(new \DateInterval('P3D'));
 				}
 				break;
 			default:
@@ -181,11 +181,11 @@ class BankingReconciliation {
 		switch ($paymentType) {
 			case self::BANKCARD:
 				// add 1 calendar day, then the next banking day
-				return self::addBankingDays($dt->add(new DateInterval('P1D')), 1);
+				return self::addBankingDays($dt->add(new \DateInterval('P1D')), 1);
 				break;
 			case self::AMEX:
 				// add 2 calendar days, then the next banking day
-				return self::addBankingDays($dt->add(new DateInterval('P2D')), 1);
+				return self::addBankingDays($dt->add(new \DateInterval('P2D')), 1);
 				break;
 			case self::ACH:
 				// if a bank day, return same day, else next banking day
@@ -207,7 +207,7 @@ class BankingReconciliation {
 
 		while ($numDays > 0) {
 				do {
-					$dt = $dt->sub(new DateInterval('P1D'));
+					$dt = $dt->sub(new \DateInterval('P1D'));
 				} while (!self::isBankingDay($dt));
 			$numDays--;
 		}
@@ -221,7 +221,7 @@ class BankingReconciliation {
 
 		while ($numDays > 0) {
 				do {
-					$dt = $dt->add(new DateInterval('P1D'));
+					$dt = $dt->add(new \DateInterval('P1D'));
 				} while (!self::isBankingDay($dt));
 			$numDays--;
 		}
