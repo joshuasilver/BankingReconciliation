@@ -2,6 +2,7 @@
     "name": "joshuasilver/bankingreconciliation",
     "description": "Banking reconciliation utilities.",
     "type": "library",
+    "version": "0.0.1-dev",
     "license": "MIT",
     "authors": [
         {
