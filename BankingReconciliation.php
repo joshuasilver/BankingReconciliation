@@ -183,8 +183,14 @@ class BankingReconciliation {
 				return self::addBankingDays($dt->add(new DateInterval('P1D')), 1);
 				break;
 			case self::AMEX:
-				// add 2 calendar days, then the next banking day
-				return self::addBankingDays($dt->add(new DateInterval('P2D')), 1);
+				//For some unknown reason, Amex changed their deposit schedule on 2019-10-19.
+				if ($dt < new DateTime("2019-10-19")) {
+					// add 2 calendar days, then the next banking day
+					return self::addBankingDays($dt->add(new DateInterval('P2D')), 1);
+				} else {
+					// add 1 calendar day, then the next banking day
+					return self::addBankingDays($dt->add(new DateInterval('P1D')), 1);
+				}
 				break;
 			case self::ACH:
 				// if a bank day, return same day, else next banking day
