@@ -10,7 +10,6 @@
             "email": "joshua@joshuasilver.com"
         }
     ],
-    "version": "0.0.7",
     "require": {},
     "autoload": {
         "psr-4": {
