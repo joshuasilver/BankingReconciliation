@@ -1,0 +1,22 @@
+{
+    "name": "joshuasilver/bankingreconciliation",
+    "description": "Banking reconciliation utilities.",
+    "type": "library",
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joshua Silver",
+            "email": "joshua@joshuasilver.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "JoshuaSilver\\": "src/JoshuaSilver/"
+        },
+        "exclude-from-classmap": [
+            "**/tests/"
+        ]
+    }
+}

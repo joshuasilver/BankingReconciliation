@@ -1,7 +1,9 @@
 <?php
+require_once realpath(dirname(__FILE__) . '/../../src/JoshuaSilver/BankingReconciliation.php');
+require_once realpath(dirname(__FILE__) . '/../../src/JoshuaSilver/BankingReconciliationException.php');
 
-require_once 'BankingReconciliation.php';
-
+use JoshuaSilver\BankingReconciliation;
+use JoshuaSilver\BankingReconciliationException;
 use PHPUnit\Framework\TestCase;
 
 class BankingReconciliationTest extends TestCase
@@ -10,9 +12,9 @@ class BankingReconciliationTest extends TestCase
      * @dataProvider invalidTypesDP
      */
     public function testInvalidTypeException($input) {
-    	$this->expectException("BankingReconciliation_Exception");
+    	$this->expectException(BankingReconciliationException::class);
         BankingReconciliation::isBankingDay($input);
-           
+
     }
 
     public function invalidTypesDP() {
@@ -28,7 +30,7 @@ class BankingReconciliationTest extends TestCase
      * @dataProvider outOfBoundsDatesDP
      */
     public function testOutOfBoundsDatesException($input) {
-    	$this->expectException("BankingReconciliation_Exception");
+    	$this->expectException(BankingReconciliationException::class);
         BankingReconciliation::isBankingDay($input);
     }
 
@@ -43,7 +45,7 @@ class BankingReconciliationTest extends TestCase
      * @dataProvider validDatesDP
      */
     public function testValidDates($input, $expectedResult) {
-            $this->assertEquals(BankingReconciliation::isBankingDay($input), $expectedResult);      
+            $this->assertEquals(BankingReconciliation::isBankingDay($input), $expectedResult);
     }
 
     public function validDatesDP() {
@@ -119,7 +121,7 @@ class BankingReconciliationTest extends TestCase
     		[new DateTime("2019-08-05"), BankingReconciliation::AMEX, new DateTime("2019-07-31")], // Mon   returns Wed
     		[new DateTime("2019-08-06"), BankingReconciliation::AMEX, new DateTime("2019-08-03")], // Tues  returns Sat
     		[new DateTime("2019-08-07"), BankingReconciliation::AMEX, new DateTime("2019-08-04")], // Wed   returns Sun
-    		
+
     		// TODO: add some bank holiday examples
 		];
     }

@@ -1,10 +1,11 @@
 <?php
+namespace JoshuaSilver;
 
 /**
  *
- * This code can be used when generating bank reconciliation reports for credit card processing. 
+ * This code can be used when generating bank reconciliation reports for credit card processing.
  * Both Amex and Bankcard (Visa/Mastercard/Discover) card types are supported
- * 
+ *
  * @author  Joshua Silver <joshua@joshuasilver.net>
  *
  */
@@ -94,22 +95,22 @@ class BankingReconciliation {
 		"2023-11-23",
 		"2023-12-25",
 	);
-	
-	public static function isBankingDay($dt) {
-		
-		$earliestSupportedDate = new DateTime('2017-01-01');
-		$latestSupportedDate = new DateTime('2023-12-31');
 
-		if (!($dt instanceof DateTime)) {
-			throw new BankingReconciliation_Exception("Must pass in DateTime, passed in: " . getType($dt));
+	public static function isBankingDay($dt) {
+
+		$earliestSupportedDate = new \DateTime('2017-01-01');
+		$latestSupportedDate = new \DateTime('2023-12-31');
+
+		if (!($dt instanceof \DateTime)) {
+			throw new BankingReconciliationException("Must pass in DateTime, passed in: " . getType($dt));
 		}
 
 		if ($dt < $earliestSupportedDate) {
-			throw new BankingReconciliation_Exception("Dates before " . $earliestSupportedDate->format('Y-m-d') . " are not supported.  Passed in: " . $dt->format('Y-m-d'));
+			throw new BankingReconciliationException("Dates before " . $earliestSupportedDate->format('Y-m-d') . " are not supported.  Passed in: " . $dt->format('Y-m-d'));
 		}
 
 		if ($dt >= $latestSupportedDate) {
-			throw new BankingReconciliation_Exception("Dates after " . $latestSupportedDate->format('Y-m-d') . " are not supported.  Passed in: " . $dt->format('Y-m-d'));
+			throw new BankingReconciliationException("Dates after " . $latestSupportedDate->format('Y-m-d') . " are not supported.  Passed in: " . $dt->format('Y-m-d'));
 		}
 
 		if (in_array($dt->format('w'), array('0','6'))) { // Sun or Sat.  Not a banking day
@@ -129,22 +130,22 @@ class BankingReconciliation {
 		switch ($paymentType) {
 			case self::BANKCARD:
 				if (!BankingReconciliation::isBankingDay($dt)){  // if NOT a banking day, recurse after adding 1  day
-					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->add(new DateInterval('P1D')), $paymentType);
+					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->add(new \DateInterval('P1D')), $paymentType);
 				} else {
 					 // Subtract 1 banking day and then subtract 1 calendar day
-					return self::subtractBankingDays($dt, 1)->sub(new DateInterval('P1D'));
+					return self::subtractBankingDays($dt, 1)->sub(new \DateInterval('P1D'));
 				}
 				break;
 			case self::AMEX:
 				if (!BankingReconciliation::isBankingDay($dt)){  // if NOT a banking day, recurse subtracting 1  day
-					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->sub(new DateInterval('P1D')), $paymentType);
+					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->sub(new \DateInterval('P1D')), $paymentType);
 				} else {
 					 // Subtract 1 banking day and then subtract 2 calendar day
-					return self::subtractBankingDays($dt, 1)->sub(new DateInterval('P2D'));
+					return self::subtractBankingDays($dt, 1)->sub(new \DateInterval('P2D'));
 				}
 				break;
 			default:
-				throw new BankingReconciliation_Exception("Invalid paymentType. Please pass in const AMEX or BANKCARD");
+				throw new BankingReconciliationException("Invalid paymentType. Please pass in const AMEX or BANKCARD");
 		}
 	}
 
@@ -154,22 +155,22 @@ class BankingReconciliation {
 		switch ($paymentType) {
 			case self::BANKCARD:
 				if (!BankingReconciliation::isBankingDay($dt)){  // if NOT a banking day, recurse after subtracting 1 day
-					return self::calculateLatestProcessingDateWithDepositDateLessThanOrEqualTo($dt->sub(new DateInterval('P1D')), $paymentType);
+					return self::calculateLatestProcessingDateWithDepositDateLessThanOrEqualTo($dt->sub(new \DateInterval('P1D')), $paymentType);
 				} else {
 					 // Subtract 2 calendar days
-					return $dt->sub(new DateInterval('P2D'));
+					return $dt->sub(new \DateInterval('P2D'));
 				}
 				break;
 			case self::AMEX:
 				if (!BankingReconciliation::isBankingDay($dt)){  // if NOT a banking day, recurse subtracting 1  day
-					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->sub(new DateInterval('P1D')), $paymentType);
+					return self::calculateEarliestProcessingDateWithDepositDateGreaterThanOrEqualTo($dt->sub(new \DateInterval('P1D')), $paymentType);
 				} else {
 					 // Subtract 3 calendar days
-					return $dt->sub(new DateInterval('P3D'));
+					return $dt->sub(new \DateInterval('P3D'));
 				}
 				break;
 			default:
-				throw new BankingReconciliation_Exception("Invalid paymentType. Please pass in const AMEX or BANKCARD");
+				throw new BankingReconciliationException("Invalid paymentType. Please pass in const AMEX or BANKCARD");
 		}
 	}
 
@@ -180,16 +181,16 @@ class BankingReconciliation {
 		switch ($paymentType) {
 			case self::BANKCARD:
 				// add 1 calendar day, then the next banking day
-				return self::addBankingDays($dt->add(new DateInterval('P1D')), 1);
+				return self::addBankingDays($dt->add(new \DateInterval('P1D')), 1);
 				break;
 			case self::AMEX:
 				//For some unknown reason, Amex changed their deposit schedule on 2019-10-19.
-				if ($dt < new DateTime("2019-10-19")) {
+				if ($dt < new \DateTime("2019-10-19")) {
 					// add 2 calendar days, then the next banking day
-					return self::addBankingDays($dt->add(new DateInterval('P2D')), 1);
+					return self::addBankingDays($dt->add(new \DateInterval('P2D')), 1);
 				} else {
 					// add 1 calendar day, then the next banking day
-					return self::addBankingDays($dt->add(new DateInterval('P1D')), 1);
+					return self::addBankingDays($dt->add(new \DateInterval('P1D')), 1);
 				}
 				break;
 			case self::ACH:
@@ -201,18 +202,18 @@ class BankingReconciliation {
 				}
 				break;
 			default:
-				throw new BankingReconciliation_Exception("Invalid paymentType. Please pass in const AMEX, BANKCARD, or ACH");
+				throw new BankingReconciliationException("Invalid paymentType. Please pass in const AMEX, BANKCARD, or ACH");
 		}
 	}
 
 	public static function subtractBankingDays($dt, $numDays) {
 		if (!is_integer($numDays) || $numDays < 0) {
-			throw new BankingReconciliation_Exception("NumDays must be a positive integer.  Passed in:" . strVal($numDays));
+			throw new BankingReconciliationException("NumDays must be a positive integer.  Passed in:" . strVal($numDays));
 		}
 
 		while ($numDays > 0) {
 				do {
-					$dt = $dt->sub(new DateInterval('P1D'));
+					$dt = $dt->sub(new \DateInterval('P1D'));
 				} while (!self::isBankingDay($dt));
 			$numDays--;
 		}
@@ -221,19 +222,16 @@ class BankingReconciliation {
 
 	public static function addBankingDays($dt, $numDays) {
 		if (!is_integer($numDays) || $numDays < 0) {
-			throw new BankingReconciliation_Exception("NumDays must be a positive integer.  Passed in:" . strVal($numDays));
+			throw new BankingReconciliationException("NumDays must be a positive integer.  Passed in:" . strVal($numDays));
 		}
 
 		while ($numDays > 0) {
 				do {
-					$dt = $dt->add(new DateInterval('P1D'));
+					$dt = $dt->add(new \DateInterval('P1D'));
 				} while (!self::isBankingDay($dt));
 			$numDays--;
 		}
 		return $dt;
 	}
 }
-
-class BankingReconciliation_Exception extends Exception { }
-
 ?>
